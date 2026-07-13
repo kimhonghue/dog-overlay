@@ -1,6 +1,6 @@
 let liveChatId = "";
 let lastMessageId = "";
-let direction = 1;
+let direction = true;
 
 
 async function getLiveChatId() {
@@ -17,53 +17,54 @@ async function getLiveChatId() {
 }
 
 
+
 async function getMessages() {
 
   const url =
-    `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet,authorDetails&key=${API_KEY}`;
+  `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&key=${API_KEY}`;
 
 
   const response = await fetch(url);
   const data = await response.json();
 
 
-  if (data.items && data.items.length > 0) {
+  if(data.items){
 
-    const newest = data.items[data.items.length - 1];
+    const msg = data.items[data.items.length - 1];
 
 
-    if (newest.id !== lastMessageId) {
+    if(msg.id !== lastMessageId){
 
-      lastMessageId = newest.id;
+      lastMessageId = msg.id;
 
-      createPet(newest.snippet.displayMessage);
+      createPet(msg.snippet.displayMessage);
 
     }
 
   }
 
 
-  setTimeout(getMessages, 3000);
+  setTimeout(getMessages,3000);
 
 }
 
 
 
-function createPet(message) {
+function createPet(text){
 
 
   const pet = document.createElement("div");
-  pet.className = "pet";
+  pet.className = direction ? "pet right" : "pet left";
 
 
   const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.innerText = message;
+  bubble.className="bubble";
+  bubble.innerText=text;
 
 
-  const dog = document.createElement("img");
-  dog.src = "dog1.png";
-  dog.className = "dog";
+  const dog=document.createElement("img");
+  dog.src="dog1.png";
+  dog.className="dog";
 
 
   pet.appendChild(bubble);
@@ -73,23 +74,12 @@ function createPet(message) {
   document.body.appendChild(pet);
 
 
-
-  if(direction === 1){
-
-    pet.classList.add("right");
-
-  } else {
-
-    pet.classList.add("left");
-
-  }
-
-
-  direction *= -1;
-
+  direction=!direction;
 
 }
 
 
 
 getLiveChatId();
+
+
