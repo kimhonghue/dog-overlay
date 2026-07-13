@@ -1,6 +1,6 @@
-
 let liveChatId = "";
 let nextPageToken = "";
+let lastMessageId = "";
 
 
 async function getLiveChatId() {
@@ -10,8 +10,7 @@ async function getLiveChatId() {
 
   const data = await response.json();
 
-  liveChatId =
-    data.items[0].liveStreamingDetails.activeLiveChatId;
+  liveChatId = data.items[0].liveStreamingDetails.activeLiveChatId;
 
   getMessages();
 }
@@ -26,9 +25,15 @@ async function getMessages() {
   const data = await response.json();
 
 
-  data.items.forEach(message => {
-    showDog();
-  });
+  if (data.items && data.items.length > 0) {
+
+    const newest = data.items[data.items.length - 1];
+
+    if (newest.id !== lastMessageId) {
+      lastMessageId = newest.id;
+      showDog();
+    }
+  }
 
 
   setTimeout(getMessages, 3000);
@@ -45,9 +50,9 @@ function showDog(){
   document.body.appendChild(dog);
 
 
-  setTimeout(()=>{
+  setTimeout(() => {
     dog.remove();
-  },5000);
+  }, 5000);
 
 }
 
