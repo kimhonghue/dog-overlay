@@ -5,106 +5,74 @@ let dogNumber = 1;
 let moveRight = true;
 
 
-
 async function getLiveChatId() {
 
-  try {
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`
+  );
 
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`
-    );
+  const data = await response.json();
 
-
-    const data = await response.json();
-
-
-    console.log(data);
+  console.log(data);
 
 
-    if (!data.items || data.items.length === 0) {
-
-      console.log("라이브 정보를 못 가져옴");
-      return;
-
-    }
-
-
-    liveChatId =
-    data.items[0].liveStreamingDetails.activeLiveChatId;
-
-
-    getMessages();
-
-
-  } catch(error) {
-
-    console.log(error);
-
+  if (!data.items || data.items.length === 0) {
+    console.log("라이브 정보를 못 가져옴");
+    return;
   }
 
+
+  liveChatId =
+  data.items[0].liveStreamingDetails.activeLiveChatId;
+
+
+  getMessages();
+
 }
-
-
 
 
 
 async function getMessages() {
 
 
-  try {
+  const url =
+  `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&key=${API_KEY}`;
 
 
-    const url =
-    `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet&key=${API_KEY}`;
+  const response = await fetch(url);
+
+  const data = await response.json();
 
 
-    const response = await fetch(url);
+
+  if(data.items){
 
 
-    const data = await response.json();
+    data.items.forEach(message=>{
 
 
-    if(data.items){
+      if(message.id !== lastMessageId){
 
 
-      data.items.forEach(message => {
+        lastMessageId = message.id;
 
 
-        if(message.id !== lastMessageId){
+        createPet(
+          message.snippet.displayMessage
+        );
 
 
-          lastMessageId = message.id;
+      }
 
 
-          createPet(
-            message.snippet.displayMessage
-          );
-
-
-        }
-
-
-      });
-
-
-    }
-
-
-  } catch(error){
-
-    console.log(error);
+    });
 
   }
 
 
-
   setTimeout(getMessages,3000);
 
-
 }
-
-
-
 
 
 
@@ -112,10 +80,11 @@ async function getMessages() {
 function createPet(text){
 
 
-
   const pet = document.createElement("div");
 
-  pet.className = moveRight ? "pet right" : "pet left";
+
+  pet.className =
+  moveRight ? "pet move-right" : "pet move-left";
 
 
 
@@ -124,6 +93,7 @@ function createPet(text){
   bubble.className = "bubble";
 
   bubble.innerText = text;
+
 
 
 
@@ -137,7 +107,6 @@ function createPet(text){
 
   dogNumber++;
 
-
   if(dogNumber > 9){
 
     dogNumber = 1;
@@ -146,11 +115,9 @@ function createPet(text){
 
 
 
-
   pet.appendChild(bubble);
 
   pet.appendChild(dog);
-
 
 
   document.body.appendChild(pet);
@@ -160,10 +127,14 @@ function createPet(text){
   moveRight = !moveRight;
 
 
+  setTimeout(()=>{
+
+    pet.remove();
+
+  },8000);
+
 
 }
-
-
 
 
 
