@@ -2,28 +2,80 @@
 <html>
 <body style="margin:0; overflow:hidden; background:transparent;">
 
-<img id="dog" src="dog1.png"
-style="
-position:absolute;
-width:250px;
-bottom:20px;
-left:20px;
-">
-
 <script>
-let frame = 1;
-const dog = document.getElementById("dog");
 
-setInterval(() => {
-  frame++;
+function createDog(name, message){
 
-  if(frame > 20){
-    frame = 1;
-  }
+  const dogBox = document.createElement("div");
 
-  dog.src = "dog" + frame + ".png";
+  dogBox.style.position = "absolute";
+  dogBox.style.bottom = "20px";
+  dogBox.style.left = Math.random() * 800 + "px";
 
-}, 150);
+  dogBox.innerHTML = `
+    <div style="
+      background:white;
+      border-radius:15px;
+      padding:8px 12px;
+      font-size:16px;
+      text-align:center;
+      margin-bottom:5px;
+    ">
+      <b>${name}</b><br>
+      ${message}
+    </div>
+
+    <img class="dog"
+    src="dog1.png"
+    width="250">
+  `;
+
+  document.body.appendChild(dogBox);
+
+
+  let frame = 1;
+  const img = dogBox.querySelector(".dog");
+
+
+  const animation = setInterval(()=>{
+
+    frame++;
+
+    if(frame > 20){
+      frame = 1;
+    }
+
+    img.src = "dog" + frame + ".png";
+
+  },150);
+
+
+  let x = parseInt(dogBox.style.left);
+
+
+  const move = setInterval(()=>{
+
+    x += 2;
+    dogBox.style.left = x+"px";
+
+  },30);
+
+
+  setTimeout(()=>{
+
+    clearInterval(animation);
+    clearInterval(move);
+    dogBox.remove();
+
+  },10000);
+
+}
+
+
+// 테스트용
+// 나중에 유튜브 채팅 연결하면 이 부분이 자동 실행됨
+createDog("테스트닉네임","안녕하세요!");
+
 </script>
 
 </body>
