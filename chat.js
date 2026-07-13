@@ -1,42 +1,43 @@
-const API_KEY = "여기에_유튜브_API_KEY";
-const VIDEO_ID = "여기에_라이브_영상_ID";
+const API_KEY = "너의_API_KEY";
+const VIDEO_ID = "너의_라이브_영상_ID";
 
+let liveChatId = "";
 let nextPageToken = "";
 
-async function getChat() {
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${await getChatId()}&part=snippet,authorDetails&key=${API_KEY}`
-    );
 
-    const data = await res.json();
-
-    if (data.items) {
-      data.items.forEach(msg => {
-        showDog();
-      });
-    }
-
-  } catch (e) {
-    console.log(e);
-  }
-
-  setTimeout(getChat, 3000);
-}
-
-
-async function getChatId() {
-  const res = await fetch(
+async function getLiveChatId() {
+  const response = await fetch(
     `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`
   );
 
-  const data = await res.json();
+  const data = await response.json();
 
-  return data.items[0].liveStreamingDetails.activeLiveChatId;
+  liveChatId =
+    data.items[0].liveStreamingDetails.activeLiveChatId;
+
+  getMessages();
 }
 
 
-function showDog() {
+async function getMessages() {
+
+  const url =
+    `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet,authorDetails&key=${API_KEY}`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+
+  data.items.forEach(message => {
+    showDog();
+  });
+
+
+  setTimeout(getMessages, 3000);
+}
+
+
+function showDog(){
 
   const dog = document.createElement("img");
 
@@ -46,10 +47,11 @@ function showDog() {
   document.body.appendChild(dog);
 
 
-  setTimeout(() => {
+  setTimeout(()=>{
     dog.remove();
-  }, 5000);
+  },5000);
+
 }
 
 
-getChat();
+getLiveChatId();
