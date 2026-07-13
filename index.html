@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>Dog Overlay</title>
-</head>
-<body>
-  <h1>준비 완료!</h1>
+<html>
+<body style="margin:0; overflow:hidden; background:transparent;">
+
+<img id="dog" src="dog1.png"
+style="
+position:absolute;
+width:250px;
+bottom:20px;
+left:20px;
+">
+
+<script>
+let frame = 1;
+const dog = document.getElementById("dog");
+
+setInterval(() => {
+  frame++;
+
+  if(frame > 20){
+    frame = 1;
+  }
+
+  dog.src = "dog" + frame + ".png";
+
+}, 150);
+</script>
+
 </body>
 </html>
