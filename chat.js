@@ -17,7 +17,6 @@ async function getLiveChatId() {
 }
 
 
-
 async function getMessages() {
 
   const url =
@@ -28,19 +27,18 @@ async function getMessages() {
   const data = await response.json();
 
 
-  if(data.items){
+  if(data.items.length > 0){
 
-    const msg = data.items[data.items.length - 1];
+    const message = data.items[data.items.length - 1];
 
 
-    if(msg.id !== lastMessageId){
+    if(message.id !== lastMessageId){
 
-      lastMessageId = msg.id;
+      lastMessageId = message.id;
 
-      createPet(msg.snippet.displayMessage);
+      createPet(message.snippet.displayMessage);
 
     }
-
   }
 
 
@@ -52,17 +50,16 @@ async function getMessages() {
 
 function createPet(text){
 
-
   const pet = document.createElement("div");
-  pet.className = direction ? "pet right" : "pet left";
+  pet.className = "pet";
 
 
   const bubble = document.createElement("div");
-  bubble.className="bubble";
-  bubble.innerText=text;
+  bubble.className = "bubble";
+  bubble.innerText = text;
 
 
-  const dog=document.createElement("img");
+  const dog = document.createElement("img");
   dog.src="dog1.png";
   dog.className="dog";
 
@@ -70,8 +67,20 @@ function createPet(text){
   pet.appendChild(bubble);
   pet.appendChild(dog);
 
-
   document.body.appendChild(pet);
+
+
+  if(direction){
+
+    pet.style.left="-200px";
+    pet.style.animation="moveRight 10s linear forwards";
+
+  } else {
+
+    pet.style.right="-200px";
+    pet.style.animation="moveLeft 10s linear forwards";
+
+  }
 
 
   direction=!direction;
@@ -81,5 +90,3 @@ function createPet(text){
 
 
 getLiveChatId();
-
-
