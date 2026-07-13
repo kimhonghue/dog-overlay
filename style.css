@@ -1,72 +1,106 @@
-.pet {
-  position: fixed;
-  bottom: 30px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  z-index:9999;
+body {
+  overflow: hidden;
 }
+
+
+.pet {
+
+  position: fixed;
+
+  bottom: 30px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  z-index: 9999;
+
+}
+
 
 
 .dog {
-  width:150px;
+
+  width: 150px;
+
 }
+
 
 
 .bubble {
 
-  background:white;
-  color:black;
-  padding:12px 18px;
-  border-radius:20px;
-  margin-bottom:10px;
-  font-size:18px;
-  white-space:nowrap;
+  background: white;
+
+  color: black;
+
+  padding: 10px 18px;
+
+  border-radius: 20px;
+
+  margin-bottom: 10px;
+
+  font-size: 18px;
+
+  white-space: nowrap;
 
 }
 
 
 
-.right {
+.pet.right {
 
-  left:-200px;
-  animation:rightMove 10s linear forwards;
+  left: -200px;
 
-}
-
-
-
-.left {
-
-  right:-200px;
-  animation:leftMove 10s linear forwards;
+  animation: moveRight 10s linear forwards;
 
 }
 
 
 
-@keyframes rightMove {
+.pet.left {
 
-from{
-left:-200px;
-}
+  right: -200px;
 
-to{
-left:100%;
-}
+  animation: moveLeft 10s linear forwards;
 
 }
 
 
 
-@keyframes leftMove {
+@keyframes moveRight {
 
-from{
-right:-200px;
+  from {
+
+    left: -200px;
+
+  }
+
+
+  to {
+
+    left: 100%;
+
+  }
+
 }
 
-to{
-right:100%;
-}
+
+
+@keyframes moveLeft {
+
+  from {
+
+    right: -200px;
+
+  }
+
+
+  to {
+
+    right: 100%;
+
+  }
 
 }
