@@ -1,5 +1,4 @@
 let liveChatId = "";
-let nextPageToken = "";
 let lastMessageId = "";
 
 
@@ -30,8 +29,10 @@ async function getMessages() {
     const newest = data.items[data.items.length - 1];
 
     if (newest.id !== lastMessageId) {
+
       lastMessageId = newest.id;
-      showDog();
+
+      showDog(newest.snippet.displayMessage);
     }
   }
 
@@ -40,19 +41,26 @@ async function getMessages() {
 }
 
 
-function showDog(){
+function showDog(message){
+
+  const box = document.createElement("div");
+  box.className = "chatBox";
+  box.innerText = message;
+
 
   const dog = document.createElement("img");
-
   dog.src = "dog1.png";
   dog.className = "dog";
 
+
+  document.body.appendChild(box);
   document.body.appendChild(dog);
 
 
-  setTimeout(() => {
+  setTimeout(()=>{
+    box.remove();
     dog.remove();
-  }, 5000);
+  },5000);
 
 }
 
