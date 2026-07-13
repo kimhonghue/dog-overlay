@@ -49,21 +49,25 @@ body {
 
 
 
+/* 오른쪽 이동 */
+
 .pet.right {
 
   left: -200px;
 
-  animation: moveRight 10s linear forwards;
+  animation: moveRight 8s linear forwards;
 
 }
 
 
 
+/* 왼쪽 이동 */
+
 .pet.left {
 
   right: -200px;
 
-  animation: moveLeft 10s linear forwards;
+  animation: moveLeft 8s linear forwards;
 
 }
 
@@ -73,14 +77,14 @@ body {
 
   from {
 
-    left: -200px;
+    transform: translateX(0);
 
   }
 
 
   to {
 
-    left: 100%;
+    transform: translateX(120vw);
 
   }
 
@@ -92,14 +96,14 @@ body {
 
   from {
 
-    right: -200px;
+    transform: translateX(0);
 
   }
 
 
   to {
 
-    right: 100%;
+    transform: translateX(-120vw);
 
   }
 
