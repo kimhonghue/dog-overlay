@@ -1,5 +1,6 @@
 let liveChatId = "";
 let lastMessageId = "";
+let direction = 1;
 
 
 async function getLiveChatId() {
@@ -35,9 +36,7 @@ async function getMessages() {
 
       lastMessageId = newest.id;
 
-
-      // 채팅 글 가져오기
-      showDog(newest.snippet.displayMessage);
+      createPet(newest.snippet.displayMessage);
 
     }
 
@@ -50,38 +49,44 @@ async function getMessages() {
 
 
 
-function showDog(message) {
+function createPet(message) {
 
 
-  const chatBox = document.createElement("div");
+  const pet = document.createElement("div");
+  pet.className = "pet";
 
-  chatBox.className = "chatBox";
 
-  chatBox.innerText = message;
-
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.innerText = message;
 
 
   const dog = document.createElement("img");
-
   dog.src = "dog1.png";
-
   dog.className = "dog";
 
 
-
-  document.body.appendChild(chatBox);
-
-  document.body.appendChild(dog);
+  pet.appendChild(bubble);
+  pet.appendChild(dog);
 
 
+  document.body.appendChild(pet);
 
-  setTimeout(() => {
 
-    chatBox.remove();
 
-    dog.remove();
+  if(direction === 1){
 
-  },5000);
+    pet.classList.add("right");
+
+  } else {
+
+    pet.classList.add("left");
+
+  }
+
+
+  direction *= -1;
+
 
 }
 
