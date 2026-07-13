@@ -3,77 +3,63 @@ body {
 }
 
 
+/* 펫 한 마리 전체 */
 .pet {
-
   position: fixed;
-
-  bottom: 30px;
-
+  bottom: 80px;
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   z-index: 9999;
-
 }
 
 
-
-.dog {
-
-  width: 150px;
-
-}
-
-
-
+/* 말풍선 */
 .bubble {
-
   background: white;
-
   color: black;
-
-  padding: 10px 18px;
-
+  padding: 8px 15px;
   border-radius: 20px;
-
-  margin-bottom: 10px;
-
   font-size: 18px;
-
+  margin-bottom: 8px;
   white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+}
 
+
+/* 강아지 */
+.dog {
+  width: 140px;
+  height: auto;
 }
 
 
 
-/* 오른쪽 이동 */
-
-.pet.right {
+/* 왼쪽에서 오른쪽 */
+.move-right {
 
   left: -200px;
 
-  animation: moveRight 8s linear forwards;
+  animation: rightMove 8s linear forwards;
 
 }
 
 
 
-/* 왼쪽 이동 */
-
-.pet.left {
+/* 오른쪽에서 왼쪽 */
+.move-left {
 
   right: -200px;
 
-  animation: moveLeft 8s linear forwards;
+  animation: leftMove 8s linear forwards;
 
 }
 
 
 
-@keyframes moveRight {
+
+@keyframes rightMove {
 
   from {
 
@@ -92,7 +78,8 @@ body {
 
 
 
-@keyframes moveLeft {
+
+@keyframes leftMove {
 
   from {
 
