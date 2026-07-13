@@ -1,5 +1,3 @@
-const API_KEY = "너의_API_KEY";
-const VIDEO_ID = "너의_라이브_영상_ID";
 
 let liveChatId = "";
 let nextPageToken = "";
