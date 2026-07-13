@@ -1,60 +1,69 @@
-.dog {
-
+.pet {
   position: fixed;
-
   bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999;
+}
 
-  left: -150px;
 
+.dog {
   width: 150px;
-
-  z-index: 10;
-
-  animation: moveDog 5s linear;
-
 }
 
 
-
-.chatBox {
-
-  position: fixed;
-
-  bottom: 170px;
-
-  left: 100px;
-
+.bubble {
   background: white;
-
   color: black;
-
-  padding: 15px 20px;
-
+  padding: 10px 15px;
   border-radius: 20px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  max-width: 250px;
+  text-align: center;
+  white-space: nowrap;
+}
 
-  font-size: 20px;
 
-  z-index: 20;
+/* 오른쪽 이동 */
+.pet.right {
+  left: -200px;
+  animation: goRight 8s linear forwards;
+}
 
+
+/* 왼쪽 이동 */
+.pet.left {
+  right: -200px;
+  animation: goLeft 8s linear forwards;
 }
 
 
 
-@keyframes moveDog {
-
+@keyframes goRight {
 
   from {
-
-    left: -150px;
-
+    left: -200px;
   }
-
 
   to {
-
     left: 100%;
-
   }
 
+}
+
+
+
+@keyframes goLeft {
+
+  from {
+    right: -200px;
+  }
+
+  to {
+    right: 100%;
+  }
 
 }
+
