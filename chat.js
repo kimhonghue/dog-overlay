@@ -1,172 +1,130 @@
+const API = API_KEY;
+const VIDEO = VIDEO_ID;
+
+const wrap = document.getElementById("overlay") || document.body;
 let liveChatId = "";
-let lastMessageId = "";
+let pageToken = "";
+let dogIndex = 1;
+const seen = new Set();
+const dogs = [];
 
-let dogNumber = 1;
-let moveRight = true;
+const W = () => innerWidth;
+const H = () => innerHeight;
+const GROUND = () => H() - 120;
 
-
-async function getLiveChatId() {
-
-  try {
-
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO_ID}&key=${API_KEY}`
-    );
-
-    const data = await response.json();
-
-    console.log(data);
-
-
-    if (!data.items || data.items.length === 0) {
-      console.log("라이브 정보를 못 가져옴");
-      return;
-    }
-
-
-    liveChatId =
-    data.items[0].liveStreamingDetails.activeLiveChatId;
-
-
-    getMessages();
-
-
-  } catch(error){
-
-    console.log(error);
-
-  }
-
+async function init() {
+  const v = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${VIDEO}&key=${API}`).then(r => r.json());
+  liveChatId = v.items?.[0]?.liveStreamingDetails?.activeLiveChatId;
+  if (!liveChatId) return console.log("LiveChat 없음");
+  poll();
+  setInterval(moveDogs, 30);
 }
 
+async function poll() {
+  if (!liveChatId) return;
 
-
-
-async function getMessages() {
-
+  const url =
+    `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}` +
+    `&part=snippet,authorDetails&maxResults=200&pageToken=${pageToken}&key=${API}`;
 
   try {
+    const d = await fetch(url).then(r => r.json());
 
+    pageToken = d.nextPageToken || pageToken;
 
-    const url =
-    `https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${liveChatId}&part=snippet,authorDetails&key=${API_KEY}`;
+    (d.items || []).forEach(m => {
+      if (seen.has(m.id)) return;
+      seen.add(m.id);
 
+      createDog(
+        m.snippet.displayMessage,
+        m.authorDetails.displayName
+      );
+    });
 
-    const response = await fetch(url);
+    setTimeout(poll, d.pollingIntervalMillis || 3000);
 
-    const data = await response.json();
-
-
-
-    if(data.items){
-
-
-      data.items.forEach(message=>{
-
-
-        if(message.id !== lastMessageId){
-
-
-          lastMessageId = message.id;
-
-
-          createPet(
-            message.snippet.displayMessage
-          );
-
-
-        }
-
-
-      });
-
-
-    }
-
-
-  } catch(error){
-
-    console.log(error);
-
+  } catch {
+    setTimeout(poll, 5000);
   }
-
-
-
-  setTimeout(getMessages,3000);
-
 }
 
-
-
-
-
-
-
-function createPet(text){
-
-
-  const pet = document.createElement("div");
-
-
-  if(moveRight){
-
-    pet.className = "pet move-right";
-
-  } else {
-
-    pet.className = "pet move-left";
-
+function freeX() {
+  for (let i = 0; i < 80; i++) {
+    let x = Math.random() * (W() - 90);
+    if (dogs.every(d => Math.abs(d.x - x) > 80)) return x;
   }
+  return Math.random() * (W() - 90);
+}
 
+function createDog(msg, user) {
+  const dog = document.createElement("img");
+  dog.src = `dog${dogIndex}.png`;
+  dog.style.position = "fixed";
+  dog.style.width = "80px";
+  dog.style.pointerEvents = "none";
+  dog.style.zIndex = 10;
 
-
+  dogIndex++;
+  if (dogIndex > 9) dogIndex = 1;
 
   const bubble = document.createElement("div");
+  bubble.innerText = `${user}\n${msg}`;
+  bubble.style.position = "fixed";
+  bubble.style.background = "#fff";
+  bubble.style.border = "2px solid #000";
+  bubble.style.borderRadius = "12px";
+  bubble.style.padding = "6px 10px";
+  bubble.style.font = "14px sans-serif";
+  bubble.style.whiteSpace = "pre-wrap";
+  bubble.style.maxWidth = "260px";
+  bubble.style.pointerEvents = "none";
+  bubble.style.zIndex = 20;
 
-  bubble.className = "bubble";
+  wrap.appendChild(dog);
+  wrap.appendChild(bubble);
 
-  bubble.innerText = text;
+  const obj = {
+    el: dog,
+    bubble,
+    x: freeX(),
+    y: GROUND(),
+    dir: Math.random() < 0.5 ? -1 : 1,
+    speed: 0.6 + Math.random() * 1.2
+  };
 
+  dogs.push(obj);
 
-
-
-  const dog = document.createElement("img");
-
-  dog.className = "dog";
-
-  dog.src = `dog${dogNumber}.png`;
-
-
-
-
-  dogNumber++;
-
-  if(dogNumber > 9){
-
-    dogNumber = 1;
-
-  }
-
-
-
-
-  pet.appendChild(bubble);
-
-  pet.appendChild(dog);
-
-
-  document.body.appendChild(pet);
-
-
-
-  moveRight = !moveRight;
-
-
+  setTimeout(() => bubble.remove(), 5000);
 }
 
+function moveDogs() {
+  const ground = GROUND();
 
+  dogs.forEach(d => {
+    d.x += d.speed * d.dir;
 
+    if (d.x < 0) {
+      d.x = 0;
+      d.dir = 1;
+    }
 
+    if (d.x > W() - 80) {
+      d.x = W() - 80;
+      d.dir = -1;
+    }
 
+    d.y = ground;
 
-getLiveChatId();
+    d.el.style.left = d.x + "px";
+    d.el.style.top = d.y + "px";
+    d.el.style.transform = d.dir > 0 ? "scaleX(1)" : "scaleX(-1)";
+
+    if (d.bubble.isConnected) {
+      d.bubble.style.left = (d.x - 30) + "px";
+      d.bubble.style.top = (d.y - 70) + "px";
+    }
+  });
+}
+
+init();
